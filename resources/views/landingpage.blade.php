@@ -7,7 +7,7 @@
 </head>
 <body>
     <nav class="bg-white mb-5">
-        <div class="shadow px-20 py-3 mx-auto">
+        <div class="shadow px-20 xl:px-[240px] py-3 mx-auto">
             <div class="md:flex justify-between items-center">
                 <!-- left section -->
                 <div class="flex justify-between items-center">
@@ -92,18 +92,20 @@
                     </p>
                 </div>
                 <div class="md:w-3/12 flex justify-center">
-                    <form action="">
+                    <form>
                         <div class="relative mb-4 sm:mt-10 flex w-full flex-wrap items-stretch">
                             <div class="relative mb-4 flex w-full flex-wrap items-stretch">
                                 <input
                                   type="search"
+                                  name="search"
+                                  value="{{(isset($_GET['search'])) ? $_GET['search'] : null}}"
                                   class="relative m-0 -mr-px block w-[1%] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-1.5 text-base font-normal text-neutral-700 outline-none transition duration-300 ease-in-out focus:border-primary-600 focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-300  dark:placeholder:text-neutral-200"
                                   placeholder="Search"
                                   aria-label="Search"
                                   aria-describedby="button-addon3" />
                                 <button
                                   class="relative z-[2] rounded-r border border-solid px-6 py-2 dark:border-neutral-300 text-xs font-medium uppercase text-primary transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
-                                  type="button"
+                                  type="submit"
                                   id="button-addon3"
                                   data-te-ripple-init>
                                     <img src="{{asset('images/search.svg')}}" alt=""> 
@@ -121,588 +123,105 @@
         </div>
         <div class="container px-10 mx-auto">
             <div class="flex items-center flex-wrap space-x-5 mt-3 md:mt-10">
-                <div class="mt-10 md:mt-0">
-                    <a href="" class="py-4 px-8 font-semibold text-xs bg-[#9D1F64] text-white rounded-lg">
-                        UX Design
-                    </a>
-                </div>
-                <div class="mt-10 md:mt-0">
-                    <a href="" class="py-4 px-8 font-semibold text-xs bg-gray-300 text-gray-400 rounded-lg">
-                        UX Writing
-                    </a>
-                </div>
-                <div class="mt-10 md:mt-0">
-                    <a href="" class="py-4 px-8 font-semibold text-xs bg-gray-300 text-gray-400 rounded-lg">
-                        Research
-                    </a>
-                </div>
-                <div class="mt-10 md:mt-0">
-                    <a href="" class="py-4 px-8 font-semibold text-xs bg-gray-300 text-gray-400 rounded-lg">
-                        Product Design
-                    </a>
-                </div>
-                <div class="mt-10 md:mt-0">
-                    <a href="" class="py-4 px-8 font-semibold text-xs bg-gray-300 text-gray-400 rounded-lg">
-                        UI Design
-                    </a>
-                </div>
-                <div class="mt-10 md:mt-0">
-                    <a href="" class="py-4 px-8 font-semibold text-xs bg-gray-300 text-gray-400 rounded-lg">
-                        Interaction Design
-                    </a>
-                </div>
+                @foreach ($webinar_categories as $item)
+                    @php
+                        $active = "bg-gray-300 text-gray-400";
+                        if(isset($_GET['webinar_category'])){
+                            if ($_GET['webinar_category'] == $item->slug) {
+                                $active = "bg-[#9D1F64] text-white";
+                            }
+                        }
+                    @endphp
+                    <div class="mt-10 md:mt-0">
+                        <a href="?webinar_category={{$item->slug}}" class="py-4 px-8 font-semibold text-xs {{$active}} rounded-lg">
+                            {{$item->name}}
+                        </a>
+                    </div>
+                @endforeach
+
             </div>
         </div>
         <div class="container mt-10 px-10 mx-auto">
             <div class="flex flex-wrap justify-between">
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
+                @forelse ($webinars as $item)
+                    <div class="mb-10 xl:mr-5">
+                        <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
+                            <div class="bg-[#9D1F64]">
+                                <div class="pt-3 px-5">
+                                    <img src="{{asset('images/logo2.svg')}}" alt="">
                                 </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
+                                <div class="px-5 pt-8 pb-10 text-white font-bold">
+                                    {{$item->title}}
+                                </div>
+                            </div>
+                            <div class="px-6 py-4">
+                                <div class="flex justify-between">
+                                    <div class="flex mb-5 -space-x-4 -space-y-9">
+                                        @foreach ($item->mentors as $mentor)
+                                            <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{Storage::url($mentor->photo)}}" alt="">
+                                        @endforeach
+                                    </div>
+                                    <div>
+                                        <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
+                                            {{$item->class_type}}
+                                        </div>
                                     </div>
                                 </div>
+                                <p class="text-gray-700 text-base mb-3">
+                                    <b>Mentor</b>
+                                    <br>
+                                    {{implode(', ', $item->mentors?->pluck('name')->toArray())}}
+                                </p>
+                            <div>
+                                @php
+                                    $percentage = 0;
+                                    if ($item->participants->count() > 0 && $item->quota > 0) {
+                                        $percentage = ($item->participants->count() / $item->quota) * 100;
+                                    }
+                                    if($percentage < 100){
+                                        if ($percentage > 50) {
+                                            $text = 'Kouta terbatas akan segera habis';
+                                        } else {
+                                            $text = 'Kouta masih tersedia';
+                                        }
+                                        $colorText = 'text-[#F09819]';
+                                        $colorBar = 'bg-gradient-to-r from-[#FF512F] to-[#F09819]';
+                                        $helpText = 'Pendaftaran akan tutup dalam..';
+                                    }else{
+                                        $colorText = 'text-[#9D1F64]';
+                                        $colorBar = 'bg-[#9D1F64]';
+                                        $text = 'Wrokshop Penuh';
+                                        $helpText = 'Sayang banget, workshop ini udah penuh kuotanya.';
+                                    }
+                                    
+                                @endphp
+                                <span class="font-bold mb-3 {{$colorText}}">{{$text}}</span>
+                                    <div class="w-full h-4 bg-gray-200 rounded-full">
+                                        <div class="h-full {{$colorBar}} rounded-full" style="width: {{$percentage}}%;"></div>
+                                    </div>
+                                <p class="mt-3 text-gray-500 text-xs">
+                                    {{$helpText}}
+                                </p>
                             </div>
-                            <p class="text-gray-700 text-base mb-3">
-                                <b>Mentor</b>
-                                <br>
-                                Evan Gilang, Annisa Nur, Evira Tiffany
-                              </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#9D1F64]">Workshop Penuh</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-[#9D1F64] rounded-full" style="width: 100%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="text-center my-10 text-[#9D1F64] text-sm ">
-                              Lihat silabus yang diberikan di workshop ini
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
+                            @if ($percentage < 100)
+                                <div class="p-5">
+                                    <div class="py-2">
+                                        <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
+                                            Pelajari Workshop Lebih Lanjut
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kuota Masih Tersedia</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 20%;"></div>
+                            @else
+                                <div class="text-center my-10 text-[#9D1F64] text-sm ">
+                                    Lihat silabus yang diberikan di workshop ini
                                 </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
+                            @endif
                             </div>
-                          </div>
                         </div>
                     </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kouta terbatas akan segera habis</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 80%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-gray-700 text-base mb-3">
-                                <b>Mentor</b>
-                                <br>
-                                Evan Gilang, Annisa Nur, Evira Tiffany
-                              </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#9D1F64]">Workshop Penuh</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-[#9D1F64] rounded-full" style="width: 100%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="text-center my-10 text-[#9D1F64] text-sm ">
-                              Lihat silabus yang diberikan di workshop ini
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kuota Masih Tersedia</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 20%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kouta terbatas akan segera habis</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 80%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-gray-700 text-base mb-3">
-                                <b>Mentor</b>
-                                <br>
-                                Evan Gilang, Annisa Nur, Evira Tiffany
-                              </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#9D1F64]">Workshop Penuh</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-[#9D1F64] rounded-full" style="width: 100%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="text-center my-10 text-[#9D1F64] text-sm ">
-                              Lihat silabus yang diberikan di workshop ini
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kuota Masih Tersedia</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 20%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kouta terbatas akan segera habis</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 80%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-gray-700 text-base mb-3">
-                                <b>Mentor</b>
-                                <br>
-                                Evan Gilang, Annisa Nur, Evira Tiffany
-                              </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#9D1F64]">Workshop Penuh</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-[#9D1F64] rounded-full" style="width: 100%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="text-center my-10 text-[#9D1F64] text-sm ">
-                              Lihat silabus yang diberikan di workshop ini
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kuota Masih Tersedia</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 20%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" mb-10">
-                    <div class="max-w-sm rounded-2xl overflow-hidden shadow-lg">
-                        <div class="bg-[#9D1F64]">
-                            <div class="pt-3 px-5">
-                                <img src="{{asset('images/logo2.svg')}}" alt="">
-                            </div>
-                            <div class="px-5 pt-8 pb-10 text-white font-bold">
-                                Basic of UX Writing - Module 101
-                            </div>
-                        </div>
-                        <div class="px-6 py-4">
-                            <div class="flex justify-between">
-                                <div class="flex mb-5 -space-x-4 -space-y-9">
-                                    <img class="w-10 -mt-9 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                    <img class="w-10 h-10 border-2 border-white rounded-full" src="{{asset('images/mentor1.svg')}}" alt="">
-                                </div>
-                                <div>
-                                    <div class="bg-blue-500 -mt-9 text-xs font-semibold px-3 py-2 rounded-full text-white">
-                                        Intermediete
-                                    </div>
-                                </div>
-                            </div>
-                          <p class="text-gray-700 text-base mb-3">
-                            <b>Mentor</b>
-                            <br>
-                            Evan Gilang, Annisa Nur, Evira Tiffany
-                          </p>
-                          <div>
-                            <span class="font-bold mb-3 text-[#F09819]">Kouta terbatas akan segera habis</span>
-                                <div class="w-full h-4 bg-gray-200 rounded-full">
-                                    <div class="h-full bg-gradient-to-r from-[#FF512F] to-[#F09819] rounded-full" style="width: 80%;"></div>
-                                </div>
-                            <p class="mt-3 text-gray-500 text-xs">
-                                Sayang banget, workshop ini udah penuh kuotanya. 
-                            </p>
-                          </div>
-                          <div class="p-5">
-                            <div class="py-2">
-                                <div class="bg bg-[#FF8E4E] py-3 px-5 text-md text-center font-semibold rounded-lg">
-                                    Pelajari Workshop Lebih Lanjut
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
+                @empty
+                Belum ada data
+                @endforelse
             </div>
         </div>
     </div>
