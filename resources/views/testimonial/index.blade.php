@@ -7,7 +7,7 @@
         <div class="card-header pb-0">
           <div class="d-flex bd-highlight">
             <div class="p-2 flex-grow-1 bd-highlight">
-             <h6>Mentors table</h6>
+             <h6>Testimonials table</h6>
             </div>
             <div class="p-2 bd-highlight">
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
@@ -22,22 +22,30 @@
               <thead>
                 <tr>
                   <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Name</th>
+                  <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Description</th>
+                  <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Position</th>
                   <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Action</th>
                 </tr>
               </thead>
               <tbody>
-                @forelse ($mentors as $item)
+                @forelse ($testimonials as $item)
                 <tr>
                     <td>
-                        <div class="d-flex px-2 py-1 mx-auto">
-                          <div>
-                            <img src="{{Storage::url($item->photo)}}" style="object-fit: cover" class="avatar avatar-sm me-3 rounded-circle" alt="user1">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{$item->name}}</h6>
-                          </div>
+                      <div class="d-flex px-2 py-1 mx-auto">
+                        <div>
+                          <img src="{{Storage::url($item->photo)}}" style="object-fit: cover" class="avatar avatar-sm me-3" alt="user1">
                         </div>
-                      </td>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{$item->name}}</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center text-xs">
+                      {{$item->description}}
+                    </td>
+                    <td class="text-center text-sm">
+                      <b>{{$item->position}}</b> at <b>{{$item->company}}</b>
+                    </td>
                     <td class="text-center">
                       <a href="javascript:;" onclick="editModal({{$item->id}})" class="text-secondary text-xs font-weight-bold" data-toggle="tooltip" data-original-title="Edit user">
                         <i class="fa fa-edit text-info"></i>
@@ -49,7 +57,7 @@
                 </tr>
                 @empty 
                 <tr>
-                  <td colspan="2" class="text-center text-xs">Mentor Empty</td>
+                  <td colspan="5" class="text-center text-xs">Testimonial Empty</td>
                 </tr>
                 @endforelse
                 {{-- <tr>
@@ -100,12 +108,27 @@
                   <small class="text-danger" id="name_create_validation"></small>
                 </div>
                 <div class="form-group">
+                  <label for="">Description <sup class="text-danger">*</sup></label>
+                  <textarea name="description" id="description_create" cols="30" rows="5" class="form-control"></textarea>
+                  <small class="text-danger" id="description_create_validation"></small>
+                </div>
+                <div class="form-group">
                   <label for="">Photo <sup class="text-danger">*</sup></label>
                   <input type="file" name="photo" id="photo_create" class="form-control" onchange="showImage('create')">
                   <small class="text-danger" id="photo_create_validation"></small>
                     <div class="mt-3">
-                        <img src="{{asset('images/mentor1.svg')}}" style="display: none;object-fit:cover" id="preview_img_create" width="100px" height="100px" class="rounded-circle" alt="">
+                        <img src="#" style="display: none;object-fit:cover" id="preview_img_create" width="312px" height="460px" class="rounded" alt="">
                     </div>
+                </div>
+                <div class="form-group">
+                  <label for="">Company <sup class="text-danger">*</sup></label>
+                  <input type="text" name="company" id="company_create" class="form-control">
+                  <small class="text-danger" id="company_create_validation"></small>
+                </div>
+                <div class="form-group">
+                  <label for="">Position <sup class="text-danger">*</sup></label>
+                  <input type="text" name="position" id="position_create" class="form-control">
+                  <small class="text-danger" id="position_create_validation"></small>
                 </div>
               </div>
               <div class="modal-footer">
@@ -132,13 +155,28 @@
                   <small class="text-danger" id="name_edit_validation"></small>
                 </div>
                 <div class="form-group">
-                    <label for="">Photo <sup class="text-danger">*</sup></label>
-                    <input type="file" name="photo" id="photo_edit" class="form-control" onchange="showImage('edit')">
-                    <small class="text-danger" id="photo_edit_validation"></small>
-                      <div class="mt-3">
-                          <img src="#" id="preview_img_edit" width="100px" height="100px" style="object-fit:cover;" class="rounded-circle" alt="">
-                      </div>
-                  </div>
+                  <label for="">Description <sup class="text-danger">*</sup></label>
+                  <textarea name="description" id="description_edit" cols="30" rows="5" class="form-control"></textarea>
+                  <small class="text-danger" id="description_edit_validation"></small>
+                </div>
+                <div class="form-group">
+                  <label for="">Photo <sup class="text-danger">*</sup></label>
+                  <input type="file" name="photo" id="photo_edit" class="form-control" onchange="showImage('edit')">
+                  <small class="text-danger" id="photo_edit_validation"></small>
+                    <div class="mt-3">
+                        <img src="#" style="object-fit:cover" id="preview_img_edit" width="312px" height="460px" class="rounded" alt="">
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label for="">Company <sup class="text-danger">*</sup></label>
+                  <input type="text" name="company" id="company_edit" class="form-control">
+                  <small class="text-danger" id="company_edit_validation"></small>
+                </div>
+                <div class="form-group">
+                  <label for="">Position <sup class="text-danger">*</sup></label>
+                  <input type="text" name="position" id="position_edit" class="form-control">
+                  <small class="text-danger" id="position_edit_validation"></small>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -181,12 +219,18 @@
         
         let name = create.name.value ?? '';
         let photo = document.getElementById('photo_create').files[0] ?? '';
+        let description = create.description.value ?? '';
+        let company = create.company.value ?? '';
+        let position = create.position.value ?? '';
 
         let formData = new FormData();
         formData.append('name', name);
         formData.append('photo', photo);
+        formData.append('description', description);
+        formData.append('company', company);
+        formData.append('position', position);
 
-        fetch("{{route('mentors.store')}}", {
+        fetch("{{route('testimonials.store')}}", {
             method: "POST",
             body: formData,
             headers: {
@@ -198,7 +242,7 @@
             if (resp.status == true) {
               Swal.fire(
                 'Good job!',
-                'Mentor Created!',
+                'Testimonial Created!',
                 'success'
               )
               setInterval(() => {
@@ -221,7 +265,7 @@
     function editModal(id){
       var myModal = new bootstrap.Modal(document.getElementById("editModal"), {});
       
-      fetch("{{url('mentors')}}/"+id)
+      fetch("{{url('testimonials')}}/"+id)
       .then(response => response.json())
       .then(function (resp) {
         if (resp.status == true) {
@@ -229,6 +273,9 @@
             document.getElementById('id_edit').value = id;
             document.getElementById('name_edit').value = resp.data.name;
             document.getElementById('preview_img_edit').src = resp.data.photo_storage;
+            document.getElementById('description_edit').value = resp.data.description;
+            document.getElementById('position_edit').value = resp.data.position;
+            document.getElementById('company_edit').value = resp.data.company;
 
             myModal.show();
         } 
@@ -243,13 +290,19 @@
         let id = edit.id_edit.value ?? '';
         let name = edit.name.value ?? '';
         let photo = document.getElementById('photo_edit').files[0] ?? '';
+        let description = edit.description.value ?? '';
+        let company = edit.company.value ?? '';
+        let position = edit.position.value ?? '';
 
         let formData = new FormData();
         formData.append('id', id);
         formData.append('name', name);
         formData.append('photo', photo);
+        formData.append('description', description);
+        formData.append('company', company);
+        formData.append('position', position);
 
-        fetch("{{route('mentors.update')}}", {
+        fetch("{{route('testimonials.update')}}", {
             method: "POST",
             body: formData,
             headers: {
@@ -261,7 +314,7 @@
             if (resp.status == true) {
               Swal.fire(
                 'Good job!',
-                'Mentor Edited!',
+                'Testimonial Edited!',
                 'success'
               )
               setInterval(() => {
@@ -284,19 +337,19 @@
     function destroy(id){
       Swal.fire({
                 icon: 'info',
-                title: 'Are you sure to delete this Mentor?',
+                title: 'Are you sure to delete this Testimonial?',
                 showCancelButton: true,
                 confirmButtonColor: '#fc4b6c',
                 confirmButtonText: 'Delete',
             }).then((result) => {
                 if (result.isConfirmed) {
-                  fetch("{{url('mentors')}}/"+id+"/delete")
+                  fetch("{{url('testimonials')}}/"+id+"/delete")
                   .then(response => response.json())
                   .then(function (resp) {
                     if (resp.status == true) {
                       Swal.fire(
                         'Good job!',
-                        'Mentor Deleted!',
+                        'Testimonial Deleted!',
                         'success'
                       )
                       setInterval(() => {

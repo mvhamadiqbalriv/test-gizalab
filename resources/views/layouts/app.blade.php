@@ -19,6 +19,7 @@
   <link href="{{asset('/')}}assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="{{asset('/')}}assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+  @yield('head')
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -60,18 +61,32 @@
           <div class="collapse " id="Webinars">
           <ul class="nav ms-4">
             <li class="nav-item">
-              <a class="nav-link {{ Request::routeIs('webinars.categories.*') ? 'active' : '' }}" href="{{route('webinars.categories.index')}}">
+              <a class="nav-link {{ Request::routeIs('webinars.categories.index') ? 'active' : '' }}" href="{{route('webinars.categories.index')}}">
                 <span class="sidenav-mini-icon"> C </span>
                 <span class="sidenav-normal"> Category </span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ Request::routeIs('webinars.*') ? 'active' : '' }}" href="{{route('webinars.index')}}">
+              <a class="nav-link {{ Request::routeIs('webinars.index') ? 'active' : '' }}" href="{{route('webinars.index')}}">
                 <span class="sidenav-mini-icon"> L </span>
                 <span class="sidenav-normal"> List </span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Request::routeIs('webinars.participants.index') ? 'active' : '' }}" href="{{route('webinars.participants.index')}}">
+                <span class="sidenav-mini-icon"> P </span>
+                <span class="sidenav-normal"> Participants </span>
+              </a>
+            </li>
           </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::routeIs('testimonials.*') ? 'active' : '' }}" href="{{route('testimonials.index')}}">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-user text-primary text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Testimonials</span>
+          </a>
         </li>
       </ul>
     </div>
@@ -157,6 +172,7 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{asset('/')}}assets/js/argon-dashboard.min.js?v=2.0.4"></script>
+  @yield('body')
 </body>
 
 </html>

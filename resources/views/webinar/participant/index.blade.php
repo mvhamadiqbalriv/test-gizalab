@@ -7,7 +7,7 @@
         <div class="card-header pb-0">
           <div class="d-flex bd-highlight">
             <div class="p-2 flex-grow-1 bd-highlight">
-             <h6>Mentors table</h6>
+             <h6>Participants table</h6>
             </div>
             <div class="p-2 bd-highlight">
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
@@ -21,23 +21,20 @@
             <table class="table align-items-center mb-0">
               <thead>
                 <tr>
-                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Name</th>
+                  <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Name</th>
+                  <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Webinar</th>
                   <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Action</th>
                 </tr>
               </thead>
               <tbody>
-                @forelse ($mentors as $item)
+                @forelse ($participants as $item)
                 <tr>
-                    <td>
-                        <div class="d-flex px-2 py-1 mx-auto">
-                          <div>
-                            <img src="{{Storage::url($item->photo)}}" style="object-fit: cover" class="avatar avatar-sm me-3 rounded-circle" alt="user1">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{$item->name}}</h6>
-                          </div>
-                        </div>
-                      </td>
+                    <td class="text-center text-xs">
+                      {{$item->name}}  
+                    </td>
+                    <td class="text-center text-xs">
+                      {{$item->webinar?->title}}  
+                    </td>
                     <td class="text-center">
                       <a href="javascript:;" onclick="editModal({{$item->id}})" class="text-secondary text-xs font-weight-bold" data-toggle="tooltip" data-original-title="Edit user">
                         <i class="fa fa-edit text-info"></i>
@@ -49,7 +46,7 @@
                 </tr>
                 @empty 
                 <tr>
-                  <td colspan="2" class="text-center text-xs">Mentor Empty</td>
+                  <td colspan="3" class="text-center text-xs">Participants Empty</td>
                 </tr>
                 @endforelse
                 {{-- <tr>
@@ -100,12 +97,13 @@
                   <small class="text-danger" id="name_create_validation"></small>
                 </div>
                 <div class="form-group">
-                  <label for="">Photo <sup class="text-danger">*</sup></label>
-                  <input type="file" name="photo" id="photo_create" class="form-control" onchange="showImage('create')">
-                  <small class="text-danger" id="photo_create_validation"></small>
-                    <div class="mt-3">
-                        <img src="{{asset('images/mentor1.svg')}}" style="display: none;object-fit:cover" id="preview_img_create" width="100px" height="100px" class="rounded-circle" alt="">
-                    </div>
+                  <label for="">Webinar <sup class="text-danger">*</sup></label>
+                  <select name="webinar_id" id="webinar_id_create" class="form-select">
+                    @foreach ($webinars as $item)
+                        <option value="{{$item->id}}">{{$item->title}}</option>
+                    @endforeach
+                  </select>
+                  <small class="text-danger" id="webinar_id_create_validation"></small>
                 </div>
               </div>
               <div class="modal-footer">
@@ -132,13 +130,14 @@
                   <small class="text-danger" id="name_edit_validation"></small>
                 </div>
                 <div class="form-group">
-                    <label for="">Photo <sup class="text-danger">*</sup></label>
-                    <input type="file" name="photo" id="photo_edit" class="form-control" onchange="showImage('edit')">
-                    <small class="text-danger" id="photo_edit_validation"></small>
-                      <div class="mt-3">
-                          <img src="#" id="preview_img_edit" width="100px" height="100px" style="object-fit:cover;" class="rounded-circle" alt="">
-                      </div>
-                  </div>
+                  <label for="">Webinar <sup class="text-danger">*</sup></label>
+                  <select name="webinar_id" id="webinar_id_edit" class="form-select">
+                    @foreach ($webinars as $item)
+                        <option value="{{$item->id}}">{{$item->title}}</option>
+                    @endforeach
+                  </select>
+                  <small class="text-danger" id="webinar_id_edit_validation"></small>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -154,18 +153,6 @@
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
 
-    function showImage(params) {
-        const fileInput = document.getElementById('photo_'+params);
-        const previewImg = document.getElementById("preview_img_"+params);
-        previewImg.style.display = 'block'
-
-        const reader = new FileReader();
-        reader.onload = function() {
-            previewImg.src = reader.result;
-        }
-        reader.readAsDataURL(fileInput.files[0]);
-    }
-
     function hideValidation() {
         const validation = document.querySelectorAll(`[id$="_validation"]`)
         for(var i = 0; i < validation.length; i++){
@@ -180,13 +167,13 @@
         e.preventDefault();
         
         let name = create.name.value ?? '';
-        let photo = document.getElementById('photo_create').files[0] ?? '';
+        let webinar_id = create.webinar_id.value ?? '';
 
         let formData = new FormData();
         formData.append('name', name);
-        formData.append('photo', photo);
+        formData.append('webinar_id', webinar_id);
 
-        fetch("{{route('mentors.store')}}", {
+        fetch("{{route('webinars.participants.store')}}", {
             method: "POST",
             body: formData,
             headers: {
@@ -198,7 +185,7 @@
             if (resp.status == true) {
               Swal.fire(
                 'Good job!',
-                'Mentor Created!',
+                'Participant Created!',
                 'success'
               )
               setInterval(() => {
@@ -221,14 +208,14 @@
     function editModal(id){
       var myModal = new bootstrap.Modal(document.getElementById("editModal"), {});
       
-      fetch("{{url('mentors')}}/"+id)
+      fetch("{{url('webinars/participants')}}/"+id)
       .then(response => response.json())
       .then(function (resp) {
         if (resp.status == true) {
 
             document.getElementById('id_edit').value = id;
             document.getElementById('name_edit').value = resp.data.name;
-            document.getElementById('preview_img_edit').src = resp.data.photo_storage;
+            document.getElementById('webinar_id_edit').value = resp.data.webinar_id;
 
             myModal.show();
         } 
@@ -242,14 +229,14 @@
         
         let id = edit.id_edit.value ?? '';
         let name = edit.name.value ?? '';
-        let photo = document.getElementById('photo_edit').files[0] ?? '';
+        let webinar_id = edit.webinar_id.value ?? '';
 
         let formData = new FormData();
         formData.append('id', id);
         formData.append('name', name);
-        formData.append('photo', photo);
+        formData.append('webinar_id', webinar_id);
 
-        fetch("{{route('mentors.update')}}", {
+        fetch("{{route('webinars.participants.update')}}", {
             method: "POST",
             body: formData,
             headers: {
@@ -261,7 +248,7 @@
             if (resp.status == true) {
               Swal.fire(
                 'Good job!',
-                'Mentor Edited!',
+                'Participant Edited!',
                 'success'
               )
               setInterval(() => {
@@ -284,19 +271,19 @@
     function destroy(id){
       Swal.fire({
                 icon: 'info',
-                title: 'Are you sure to delete this Mentor?',
+                title: 'Are you sure to delete this Participant?',
                 showCancelButton: true,
                 confirmButtonColor: '#fc4b6c',
                 confirmButtonText: 'Delete',
             }).then((result) => {
                 if (result.isConfirmed) {
-                  fetch("{{url('mentors')}}/"+id+"/delete")
+                  fetch("{{url('webinars/participants')}}/"+id+"/delete")
                   .then(response => response.json())
                   .then(function (resp) {
                     if (resp.status == true) {
                       Swal.fire(
                         'Good job!',
-                        'Mentor Deleted!',
+                        'Participant Deleted!',
                         'success'
                       )
                       setInterval(() => {

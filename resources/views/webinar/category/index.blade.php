@@ -130,13 +130,10 @@
                   <small class="text-danger" id="name_edit_validation"></small>
                 </div>
                 <div class="form-group">
-                    <label for="">Photo</label>
-                    <input type="file" name="photo" id="photo_edit" class="form-control" onchange="showImage('edit')">
-                    <small class="text-danger" id="photo_edit_validation"></small>
-                      <div class="mt-3">
-                          <img src="#" id="preview_img_edit" width="100px" height="100px" style="object-fit:cover;" class="rounded-circle" alt="">
-                      </div>
-                  </div>
+                  <label for="">Slug</label>
+                  <input type="text" name="slug" id="slug_edit" class="form-control" readonly>
+                  <small class="text-danger" id="slug_edit_validation"></small>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -219,14 +216,14 @@
     function editModal(id){
       var myModal = new bootstrap.Modal(document.getElementById("editModal"), {});
       
-      fetch("{{url('mentors')}}/"+id)
+      fetch("{{url('webinars/categories')}}/"+id)
       .then(response => response.json())
       .then(function (resp) {
         if (resp.status == true) {
 
             document.getElementById('id_edit').value = id;
             document.getElementById('name_edit').value = resp.data.name;
-            document.getElementById('preview_img_edit').src = resp.data.photo_storage;
+            document.getElementById('slug_edit').value = resp.data.slug;
 
             myModal.show();
         } 
@@ -247,7 +244,7 @@
         formData.append('name', name);
         formData.append('slug', slug);
 
-        fetch("{{route('mentors.update')}}", {
+        fetch("{{route('webinars.categories.update')}}", {
             method: "POST",
             body: formData,
             headers: {
@@ -270,8 +267,8 @@
                     var error = Object.entries(resp.data);
                     hideValidation()
                     error.forEach((key,value) => {
-                        document.getElementById(key[0]+'_create_validation').style.display = 'block';
-                        document.getElementById(key[0]+'_create_validation').textContent = key[1];
+                        document.getElementById(key[0]+'_edit_validation').style.display = 'block';
+                        document.getElementById(key[0]+'_edit_validation').textContent = key[1];
                     });
                 }
             }
@@ -282,13 +279,13 @@
     function destroy(id){
       Swal.fire({
                 icon: 'info',
-                title: 'Are you sure to delete this Mentor?',
+                title: 'Are you sure to delete this Category?',
                 showCancelButton: true,
                 confirmButtonColor: '#fc4b6c',
                 confirmButtonText: 'Delete',
             }).then((result) => {
                 if (result.isConfirmed) {
-                  fetch("{{url('mentors')}}/"+id+"/delete")
+                  fetch("{{url('webinars/categories')}}/"+id+"/delete")
                   .then(response => response.json())
                   .then(function (resp) {
                     if (resp.status == true) {
@@ -310,6 +307,9 @@
 
     let nameCreate = document.getElementById('name_create');
     nameCreate.addEventListener('keyup', createUniqueSlug);
+
+    let nameEdit = document.getElementById('name_edit');
+    nameEdit.addEventListener('keyup', editUniqueSlug);
 
     function createSlug(str) {
       const slug = str
@@ -339,10 +339,20 @@
       let check = checkSlugUnique(slug)
       console.log(check);
       if (checkSlugUnique(slug)) {
-        // If the slug is not unique, append a random string to the end and try again
         slug += '-' + Math.random().toString(36).substring(2, 7);
       }
       document.getElementById('slug_create').value = slug;
+    }
+
+    function editUniqueSlug() {
+      let str = nameEdit.value;
+      let slug = createSlug(str);
+      let check = checkSlugUnique(slug)
+      console.log(check);
+      if (checkSlugUnique(slug)) {
+        slug += '-' + Math.random().toString(36).substring(2, 7);
+      }
+      document.getElementById('slug_edit').value = slug;
     }
 
   </script>

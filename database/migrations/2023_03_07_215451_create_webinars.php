@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('thumbnail');
-            $table->string('kelas');
+            $table->string('class_type');
             $table->date('date');
+            $table->integer('quota');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
