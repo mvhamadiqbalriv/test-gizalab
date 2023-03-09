@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @vite('resources/css/app.css')
+  <title>GizaLab Test</title>
 </head>
 <body>
     <nav class="bg-white mb-5">
